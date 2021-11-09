@@ -1,0 +1,42 @@
+{% extends 'flatpages/default.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Sign Up{% endblock title %}
+
+{% block content %}
+    <h2>Sign Up</h2>
+    <form class="form-control" method="post">
+        {% csrf_token %}
+        {% crispy form %}
+    <br>
+    <button class="btn btn-success" type="submit">Регистрация</button>
+    </form>
+{% endblock content %}
+
+{% block cat-widget %}
+    {% if cat_fh or cat_sh %}
+        <div class="col-sm-6">
+            <ul class="list-unstyled mb-0">
+                {% for category in cat_fh %}
+                    <li><a href="{% url 'category_detail' category.id %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <ul class="list-unstyled mb-0">
+                {% for category in cat_sh %}
+                    <li><a href="{% url 'category_detail' category.id %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <h4>Категорий нет</h4>
+    {% endif %}
+{% endblock cat-widget %}
+
+{% block search %}
+    <form class="input-group " action="{% url 'search_results' %}" method="get">
+        <input name="q" class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+    </form>
+{% endblock search %}

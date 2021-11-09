@@ -1,0 +1,56 @@
+{% extends 'flatpages/default.html' %}
+
+{% load static %}
+{% block content %}
+
+    <article>
+
+        <header class="mb-4">
+            <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+
+            {% if post.author == current_user %}
+                <div class="text-muted fst-italic mb-2">Пост {{ post.date_posted|date:'d-M-Y' }} {{ post.date_posted|time:"H:i" }} - {{ post.author }} <a href="{% url 'post_edit' post.pk %}"> редактировать</a>|<a href="{% url 'post_delete' post.pk %}"> удалить</a></div>
+            {% else %}
+                {% if user.is_authenticated %}
+                    <div class="text-muted fst-italic mb-2">Пост {{ post.date_posted|date:'d-M-Y' }} {{ post.date_posted|time:"H:i" }} - {{ post.author }} <a href="{% url 'comment_create' post.pk %}"> комментировать</a></div>
+                {% else %}
+                    <div class="text-muted fst-italic mb-2">Пост {{ post.date_posted|date:'d-M-Y' }} {{ post.date_posted|time:"H:i" }} - {{ post.author }}</div>
+                {% endif %}
+            {% endif %}
+
+            {% for c in post.category.all %}
+                <a class="badge bg-secondary text-decoration-none link-light" href="{% url 'category_detail' c.id %}">{{ c.name }}</a>
+            {% endfor %}
+        </header>
+        <section class="mb-5">
+            {{ post.content|safe }}
+        </section>
+    </article>
+{% endblock content %}
+
+{% block cat-widget %}
+    {% if cat_fh or cat_sh %}
+        <div class="col-sm-6">
+            <ul class="list-unstyled mb-0">
+                {% for category in cat_fh %}
+                    <li><a href="{% url 'category_detail' category.id %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <ul class="list-unstyled mb-0">
+                {% for category in cat_sh %}
+                    <li><a href="{% url 'category_detail' category.id %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <h4>Категорий нет</h4>
+    {% endif %}
+{% endblock cat-widget %}
+
+{% block search %}
+    <form class="input-group " action="{% url 'search_results' %}" method="get">
+        <input name="q" class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+    </form>
+{% endblock search %}

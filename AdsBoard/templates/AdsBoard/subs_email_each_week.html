@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Привет, {{usr.first_name}} {{usr.last_name}}. За неделю на нашем портале:</h2>
+    <table>
+      <thead>
+        <th>
+          Название
+        </th>
+        <th>
+            Категория
+        </th>
+        <th>
+            Дата
+        </th>
+        <th>
+            превью
+        </th>
+        <th>
+
+        </th>
+      </thead>
+      <tbody>
+        {% for post in news %}
+        <tr>
+            <td>
+                {{ post.title }}
+            </td>
+            <td>
+                {% for c in post.category.all %}
+                    {{ c.name }}
+                {% endfor %}
+            </td>
+            <td>
+                {{ post.date_posted|date:'d M Y' }}
+            </td>
+            <td>
+                {{ post.text|truncatechars:30 }}
+            </td>
+            <td>
+                <a href="{{ full_url }}{{ post.get_absolute_url }}">Пост:</a>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</body>
+</html>2

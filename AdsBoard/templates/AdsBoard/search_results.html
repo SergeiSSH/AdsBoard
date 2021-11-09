@@ -1,0 +1,63 @@
+{% extends 'flatpages/default.html' %}
+
+{% load static %}
+{% load i18n %}
+{% block title %}
+{% endblock title %}
+
+{% block content %}
+
+    <h1 class="fw-bolder mb-1">Найдено {{ query }}</h1>
+    <br>
+    <br>
+    {% if posts %}
+        {% for post in posts %}
+            <article>
+
+                <header class="mb-4">
+
+                    <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+
+                    <div class="text-muted fst-italic mb-2">Пост {{ post.date_posted|date:'d-M-Y' }} {{ post_posted|time:"H:i" }} - {{ post.author }}</div>
+
+                    {% for c in post.category.all %}
+                        <a class="badge bg-secondary text-decoration-none link-light" href="{% url 'category_detail' c.id %}">{{ c.name }}</a>
+                    {% endfor %}
+                </header>
+                <section class="mb-5">
+                    {{ post.content|safe|truncatechars:200 }} <a href="{% url 'post_detail' post.id %}">далее...</a>
+                </section>
+            </article>
+        {% endfor %}
+    {% else %}
+
+        <h2> {% blocktrans %}-не найдено-{% endblocktrans %}</h2>
+    {% endif %}
+{% endblock content %}
+
+{% block cat-widget %}
+    {% if cat_fh or cat_sh %}
+        <div class="col-sm-6">
+            <ul class="list-unstyled mb-0">
+                {% for category in cat_fh %}
+                    <li><a href="{% url 'category_detail' category.id %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <ul class="list-unstyled mb-0">
+                {% for category in cat_sh %}
+                    <li><a href="{% url 'category_detail' category.id %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <h4>Категорий нет</h4>
+    {% endif %}
+{% endblock cat-widget %}
+
+{% block search %}
+    <form class="input-group " action="{% url 'search_results' %}" method="get">
+        <input name="q" class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+    </form>
+{% endblock search %}
